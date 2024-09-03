@@ -25,7 +25,7 @@ const CardPopularProducts = () => {
               >
                 <div className="flex items-center gap-3">
                   <Image
-                    src={''}
+                    src={``}
                     alt={product.name}
                     width={48}
                     height={48}

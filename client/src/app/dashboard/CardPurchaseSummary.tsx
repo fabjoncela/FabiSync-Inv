@@ -66,11 +66,8 @@ const CardPurchaseSummary = () => {
                 data={purchaseData}
                 margin={{ top: 0, right: 0, left: -50, bottom: 45 }}
               >
-                {/* get the date in x axis and y empty */}
                 <XAxis dataKey="date" tick={false} axisLine={false} />
                 <YAxis tickLine={false} tick={false} axisLine={false} />
-                
-                {/* we formate the date here */}
                 <Tooltip
                   formatter={(value: number) => [
                     `$${value.toLocaleString("en")}`,
