@@ -57,7 +57,7 @@ export interface User {
 }
 
 export const api = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3001' }),
   reducerPath: "api",
   tagTypes: ["DashboardMetrics", "Products", "Users", "Expenses"],
   endpoints: (build) => ({
@@ -88,6 +88,22 @@ export const api = createApi({
       query: () => "/expenses",
       providesTags: ["Expenses"],
     }),
+    deleteProduct: build.mutation<void, { productId: string, quantity: number }>({
+      query: ({ productId, quantity }) => ({
+        url: `/products/${productId}`,
+        method: "DELETE",
+        body: { quantity },  // Pass quantity in the body
+      }),
+      invalidatesTags: ["Products"],
+    }),
+    updateProduct: build.mutation<void, { productId: string, name: string, price: number, stockQuantity: number, rating: number }>({
+      query: ({ productId, ...patch }) => ({
+        url: `/products/${productId}`,
+        method: "PUT",
+        body: patch,
+      }),
+      invalidatesTags: ["Products"],
+    }),
   }),
 });
 
@@ -97,4 +113,6 @@ export const {
   useCreateProductMutation,
   useGetUsersQuery,
   useGetExpensesByCategoryQuery,
+  useDeleteProductMutation,
+  useUpdateProductMutation,
 } = api;

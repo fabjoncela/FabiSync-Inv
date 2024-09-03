@@ -1,6 +1,7 @@
 import { LucideIcon } from "lucide-react";
 import React from "react";
 
+//this is the details fro the StatCardProps
 type StatDetail = {
   title: string;
   amount: string;
@@ -15,6 +16,7 @@ type StatCardProps = {
   dateRange: string;
 };
 
+//main function with the props {} and : propType
 const StatCard = ({
   title,
   primaryIcon,
@@ -24,8 +26,9 @@ const StatCard = ({
   const formatPercentage = (value: number) => {
     const signal = value >= 0 ? "+" : "";
     return `${signal}${value.toFixed()}%`;
-  };
+  };// change the symbol from + or - depending on the value 
 
+  //change the text color if the value is positive or negative
   const getChangeColor = (value: number) =>
     value >= 0 ? "text-green-500" : "text-red-500";
 
@@ -42,7 +45,7 @@ const StatCard = ({
 
       {/* BODY */}
       <div className="flex mb-6 items-center justify-around gap-4 px-5">
-        <div className="rounded-full p-5 bg-blue-50 border-sky-300 border-[1px]">
+        <div className="rounded-full p-5 bg-blue-50 border-sky-300 border-[4px]">
           {primaryIcon}
         </div>
         <div className="flex-1">
@@ -67,7 +70,7 @@ const StatCard = ({
                   </span>
                 </div>
               </div>
-              {index < details.length - 1 && <hr />}
+              {index < details.length - 1 && <hr />} 
             </React.Fragment>
           ))}
         </div>

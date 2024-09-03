@@ -7,9 +7,21 @@ import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
 type ExpenseSums = {
   [category: string]: number;
-};
+};//a typescript type...     property: string // value: number   ex: food: 250 or rent: 1000
 
-const colors = ["#00C49F", "#0088FE", "#FFBB28"];
+function formatNumber(num: number): string {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(2) + 'M';
+  } else if (num >= 1000) {
+    return (num / 1000).toFixed(2) + 'K';
+  } else {
+    return num.toFixed(2);
+  }
+}
+
+
+
+const colors = ["#00C49F", "#0088FE", "#FFBB28"]; //make the colors again so we dont gave to rerender them for performance reasons
 
 const CardExpenseSummary = () => {
   const { data: dashboardMetrics, isLoading } = useGetDashboardMetricsQuery();
@@ -17,19 +29,21 @@ const CardExpenseSummary = () => {
   const expenseSummary = dashboardMetrics?.expenseSummary[0];
 
   const expenseByCategorySummary =
-    dashboardMetrics?.expenseByCategorySummary || [];
+    dashboardMetrics?.expenseByCategorySummary || []; //make sure it exist or make empty array
 
+    //grab the data we created above ... accumulation 
   const expenseSums = expenseByCategorySummary.reduce(
     (acc: ExpenseSums, item: ExpenseByCategorySummary) => {
       const category = item.category + " Expenses";
       const amount = parseInt(item.amount, 10);
-      if (!acc[category]) acc[category] = 0;
-      acc[category] += amount;
+      if (!acc[category]) acc[category] = 0; //if the accumulated category's value doesnt exist make it zero
+      acc[category] += amount;//save the value or add it if it doesnt exist 
       return acc;
     },
     {}
   );
 
+  //get the data from the funct above and map the name and values
   const expenseCategories = Object.entries(expenseSums).map(
     ([name, value]) => ({
       name,
@@ -37,11 +51,12 @@ const CardExpenseSummary = () => {
     })
   );
 
+  //we get the values and add them
   const totalExpenses = expenseCategories.reduce(
     (acc, category: { value: number }) => acc + category.value,
     0
   );
-  const formattedTotalExpenses = totalExpenses.toFixed(2);
+  const formattedTotalExpenses = totalExpenses.toFixed(2); //round the rumber
 
   return (
     <div className="row-span-3 bg-white shadow-md rounded-2xl flex flex-col justify-between">
@@ -112,7 +127,7 @@ const CardExpenseSummary = () => {
                   <p className="text-sm">
                     Average:{" "}
                     <span className="font-semibold">
-                      ${expenseSummary.totalExpenses.toFixed(2)}
+                      ${formatNumber(expenseSummary.totalExpenses)}
                     </span>
                   </p>
                 </div>

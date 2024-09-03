@@ -1,5 +1,5 @@
 "use client";
-
+//layout of the page here
 import {
   CheckCircle,
   Package,
@@ -21,28 +21,29 @@ const Dashboard = () => {
       <CardPurchaseSummary />
       <CardExpenseSummary />
       <StatCard
-        title="Customer & Expenses"
-        primaryIcon={<Package className="text-blue-600 w-6 h-6" />}
-        dateRange="22 - 29 October 2023"
-        details={[
-          {
-            title: "Customer Growth",
-            amount: "175.00",
-            changePercentage: 131,
-            IconComponent: TrendingUp,
-          },
-          {
-            title: "Expenses",
-            amount: "10.00",
-            changePercentage: -56,
-            IconComponent: TrendingDown,
-          },
-        ]}
-      />
+      title="Customer & Expenses"
+      primaryIcon={<Package className="text-blue-600 w-6 h-6" />}
+      dateRange=""
+      details={[
+        {
+          title: "Customer Growth",
+          amount: "283.00",
+          changePercentage: 141,
+          IconComponent: TrendingUp,
+        },
+        {
+          title: "Expenses",
+          amount: "60.00",
+          changePercentage: -68,
+          IconComponent: TrendingDown,
+        },
+      ]}
+    />
+
       <StatCard
         title="Dues & Pending Orders"
         primaryIcon={<CheckCircle className="text-blue-600 w-6 h-6" />}
-        dateRange="22 - 29 October 2023"
+        dateRange=""
         details={[
           {
             title: "Dues",
@@ -52,7 +53,7 @@ const Dashboard = () => {
           },
           {
             title: "Pending Orders",
-            amount: "147",
+            amount: "147.00",
             changePercentage: -56,
             IconComponent: TrendingDown,
           },
@@ -61,23 +62,23 @@ const Dashboard = () => {
       <StatCard
         title="Sales & Discount"
         primaryIcon={<Tag className="text-blue-600 w-6 h-6" />}
-        dateRange="22 - 29 October 2023"
+        dateRange=""
         details={[
           {
             title: "Sales",
-            amount: "1000.00",
-            changePercentage: 20,
+            amount: "2000.00",
+            changePercentage: 40,
             IconComponent: TrendingUp,
           },
           {
             title: "Discount",
-            amount: "200.00",
-            changePercentage: -10,
+            amount: "400.00",
+            changePercentage: -20,
             IconComponent: TrendingDown,
           },
         ]}
       />
-    </div>
+    </div> 
   );
 };
 

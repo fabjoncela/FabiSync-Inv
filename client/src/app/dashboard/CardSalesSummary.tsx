@@ -12,22 +12,23 @@ import {
 } from "recharts";
 
 const CardSalesSummary = () => {
-  const { data, isLoading, isError } = useGetDashboardMetricsQuery();
+  const { data, isLoading, isError } = useGetDashboardMetricsQuery();//fetch data from dashboard metrics
   const salesData = data?.salesSummary || [];
 
-  const [timeframe, setTimeframe] = useState("weekly");
+  const [timeframe, setTimeframe] = useState("weekly");//var to store the timeframe
 
   const totalValueSum =
-    salesData.reduce((acc, curr) => acc + curr.totalValue, 0) || 0;
+    salesData.reduce((acc, curr) => acc + curr.totalValue, 0) || 0;//data calcuations 
 
   const averageChangePercentage =
     salesData.reduce((acc, curr, _, array) => {
       return acc + curr.changePercentage! / array.length;
-    }, 0) || 0;
+    }, 0) || 0;//calculates the average percentage change from salesData, the little green % number
 
   const highestValueData = salesData.reduce((acc, curr) => {
     return acc.totalValue > curr.totalValue ? acc : curr;
-  }, salesData[0] || {});
+  }, salesData[0] || {});//finds the entry in salesData with the highest totalValue
+//compares each entry (curr) with the current accumulator (acc) and returns the one with the higher value.
 
   const highestValueDate = highestValueData.date
     ? new Date(highestValueData.date).toLocaleDateString("en-US", {
@@ -35,7 +36,7 @@ const CardSalesSummary = () => {
         day: "numeric",
         year: "2-digit",
       })
-    : "N/A";
+    : "N/A";//This formats the date of the entry with the highest totalValue, converting it to a string in the MM/DD/YY format. 
 
   if (isError) {
     return <div className="m-5">Failed to fetch data</div>;
@@ -85,7 +86,7 @@ const CardSalesSummary = () => {
                 <option value="monthly">Monthly</option>
               </select>
             </div>
-            {/* CHART */}
+            {/* CHART from rechats library */}
             <ResponsiveContainer width="100%" height={350} className="px-7">
               <BarChart
                 data={salesData}
@@ -107,6 +108,7 @@ const CardSalesSummary = () => {
                   tickLine={false}
                   axisLine={false}
                 />
+                {/* the tooltip shows detailed info when hovering over each bar, from recharts not material ui*/}
                 <Tooltip
                   formatter={(value: number) => [
                     `$${value.toLocaleString("en")}`,
@@ -120,10 +122,11 @@ const CardSalesSummary = () => {
                     });
                   }}
                 />
+                {/* the bars that shows like columns that fill the data */}
                 <Bar
                   dataKey="totalValue"
                   fill="#3182ce"
-                  barSize={10}
+                  barSize={17}
                   radius={[10, 10, 0, 0]}
                 />
               </BarChart>
