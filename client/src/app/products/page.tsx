@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { useCreateProductMutation, useDeleteProductMutation, useGetProductsQuery, useUpdateProductMutation } from "@/state/api";
 import { PlusCircleIcon, SearchIcon, TrashIcon, PencilIcon } from "lucide-react";
 import { useState } from "react";
@@ -6,6 +6,7 @@ import Header from "@/app/(components)/Header";
 import Rating from "@/app/(components)/Rating";
 import CreateProductModal from "./CreateProductModal";
 import Image from "next/image";
+import DeleteProductModal from "./DeleteProductModal"; 
 
 type ProductFormData = {
   name: string;
@@ -15,6 +16,8 @@ type ProductFormData = {
 };
 
 const Products = () => {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteProductName, setDeleteProductName] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<ProductFormData | null>(null);
@@ -27,22 +30,27 @@ const Products = () => {
 
   const handleCreateProduct = async (productData: ProductFormData) => {
     await createProduct(productData);
+    setIsModalOpen(false); // Close the modal after creation
   };
 
   const handleEditProduct = async (productData: ProductFormData) => {
     if (!currentProduct) return;
     await updateProduct({ ...productData, productId: currentProduct.productId });
+    setIsModalOpen(false); // Close the modal after editing
   };
 
-  const handleDeleteProduct = async (productId: string) => {
-    const quantity = prompt("Enter the number of products to delete:");
+  const handleDeleteClick = (product: ProductFormData) => {
+    setDeleteProductName(product.name);
+    setIsDeleteModalOpen(true);
+    setCurrentProduct(product);
+  };
 
-    if (!quantity || isNaN(+quantity) || +quantity <= 0) {
-      alert("Please enter a valid number");
-      return;
+  const handleConfirmDelete = async (quantity: number) => {
+    if (currentProduct) {
+      await deleteProduct({ productId: currentProduct.productId, quantity });
+      setIsDeleteModalOpen(false);
+      setCurrentProduct(null);
     }
-
-    await deleteProduct({ productId, quantity: +quantity });
   };
 
   if (isLoading) {
@@ -50,9 +58,7 @@ const Products = () => {
   }
 
   if (isError || !products) {
-    return (
-      <div className="text-center text-red-500 py-4">Failed to fetch products</div>
-    );
+    return <div className="text-center text-red-500 py-4">Failed to fetch products</div>;
   }
 
   return (
@@ -86,12 +92,12 @@ const Products = () => {
       </div>
 
       {/* BODY PRODUCTS LIST */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg-grid-cols-3 gap-10 justify-between">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-between">
         {products?.map((product) => (
           <div key={product.productId} className="border shadow rounded-md p-4 max-w-full w-full mx-auto">
             <div className="flex flex-col items-center">
               <Image
-                src={``}
+                src={``} // Add your image source here
                 alt={product.name}
                 width={150}
                 height={150}
@@ -121,7 +127,7 @@ const Products = () => {
               {/* Delete Button */}
               <button
                 className="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex items-center"
-                onClick={() => handleDeleteProduct(product.productId)}
+                onClick={() => handleDeleteClick(product)} // Open delete modal
               >
                 <TrashIcon className="w-4 h-4 mr-2" /> Delete
               </button>
@@ -130,7 +136,15 @@ const Products = () => {
         ))}
       </div>
 
-      {/* MODAL */}
+      {/* MODAL for delete confirmation */}
+      <DeleteProductModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        productName={deleteProductName}
+      />
+
+      {/* MODAL for create/edit product */}
       <CreateProductModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
