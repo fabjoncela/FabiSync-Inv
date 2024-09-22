@@ -6,17 +6,20 @@ import Header from "@/app/(components)/Header";
 import Rating from "@/app/(components)/Rating";
 import CreateProductModal from "./CreateProductModal";
 import Image from "next/image";
-import DeleteProductModal from "./DeleteProductModal"; 
+import DeleteProductModal from "./DeleteProductModal";
+import AddQuantityModal from "./AddQuantityModal";
 
 type ProductFormData = {
   name: string;
   price: number;
   stockQuantity: number;
   rating: number;
+  productId: string; // Ensure productId is included
 };
 
 const Products = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isAddQuantityModalOpen, setIsAddQuantityModalOpen] = useState(false);
   const [deleteProductName, setDeleteProductName] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,12 +34,14 @@ const Products = () => {
   const handleCreateProduct = async (productData: ProductFormData) => {
     await createProduct(productData);
     setIsModalOpen(false); // Close the modal after creation
+    setCurrentProduct(null); // Reset the current product
   };
 
   const handleEditProduct = async (productData: ProductFormData) => {
     if (!currentProduct) return;
     await updateProduct({ ...productData, productId: currentProduct.productId });
     setIsModalOpen(false); // Close the modal after editing
+    setCurrentProduct(null); // Reset the current product
   };
 
   const handleDeleteClick = (product: ProductFormData) => {
@@ -50,6 +55,15 @@ const Products = () => {
       await deleteProduct({ productId: currentProduct.productId, quantity });
       setIsDeleteModalOpen(false);
       setCurrentProduct(null);
+    }
+  };
+
+  const handleAddQuantity = async (quantity: number) => {
+    if (currentProduct) {
+      const newQuantity = currentProduct.stockQuantity + quantity;
+      await updateProduct({ ...currentProduct, stockQuantity: newQuantity });
+      setIsAddQuantityModalOpen(false); // Close the modal after updating
+      setCurrentProduct(null); // Reset the current product
     }
   };
 
@@ -112,11 +126,22 @@ const Products = () => {
                 </div>
               )}
 
+              {/* Add Quantity Button */}
+              <button
+                className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => {
+                  setCurrentProduct(product);
+                  setIsAddQuantityModalOpen(true);
+                }}
+              >
+                Add Quantity
+              </button>
+
               {/* Edit Button */}
               <button
                 className="mt-4 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded flex items-center"
                 onClick={() => {
-                  setCurrentProduct(product); // Set product to edit
+                  setCurrentProduct(product);
                   setIsModalOpen(true);
                   setIsEditMode(true);
                 }}
@@ -151,6 +176,14 @@ const Products = () => {
         onSubmit={isEditMode ? handleEditProduct : handleCreateProduct}
         initialData={currentProduct ?? undefined}
         isEditMode={isEditMode}
+      />
+
+      {/* MODAL for adding quantity */}
+      <AddQuantityModal
+        isOpen={isAddQuantityModalOpen}
+        onClose={() => setIsAddQuantityModalOpen(false)}
+        onConfirm={handleAddQuantity}
+        productName={currentProduct?.name ?? ""}
       />
     </div>
   );
