@@ -17,6 +17,11 @@ type ProductFormData = {
   productId: string; // Ensure productId is included
 };
 
+const getImageIndex = (productId) => {
+  const hash = [...productId].reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return (hash % 12) + 1; // Ensure the index is between 1 and 12
+};
+
 const Products = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isAddQuantityModalOpen, setIsAddQuantityModalOpen] = useState(false);
@@ -107,59 +112,60 @@ const Products = () => {
 
       {/* BODY PRODUCTS LIST */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-between">
-        {products?.map((product) => (
-          <div key={product.productId} className="border shadow rounded-md p-4 max-w-full w-full mx-auto">
-            <div className="flex flex-col items-center">
-              <Image
-                src={``} // Add your image source here
-                alt={product.name}
-                width={150}
-                height={150}
-                className="mb-3 rounded-2xl w-36 h-36"
-              />
-              <h3 className="text-lg text-gray-900 font-semibold">{product.name}</h3>
-              <p className="text-gray-800">${product.price.toFixed(2)}</p>
-              <div className="text-sm text-gray-600 mt-1">Stock: {product.stockQuantity}</div>
-              {product.rating && (
-                <div className="flex items-center mt-2">
-                  <Rating rating={product.rating} />
-                </div>
-              )}
-
-              {/* Add Quantity Button */}
-              <button
-                className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => {
-                  setCurrentProduct(product);
-                  setIsAddQuantityModalOpen(true);
-                }}
-              >
-                Add Quantity
-              </button>
-
-              {/* Edit Button */}
-              <button
-                className="mt-4 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded flex items-center"
-                onClick={() => {
-                  setCurrentProduct(product);
-                  setIsModalOpen(true);
-                  setIsEditMode(true);
-                }}
-              >
-                <PencilIcon className="w-4 h-4 mr-2" /> Edit
-              </button>
-
-              {/* Delete Button */}
-              <button
-                className="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex items-center"
-                onClick={() => handleDeleteClick(product)} // Open delete modal
-              >
-                <TrashIcon className="w-4 h-4 mr-2" /> Delete
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+      {products?.map((product) => {
+          const imageIndex = getImageIndex(product.productId); // Get deterministic image index
+          return (
+            <div key={product.productId} className="border shadow rounded-md p-4 max-w-full w-full mx-auto">
+              <div className="flex flex-col items-center">
+                <Image
+                  src={`https://s3-fabi-inv.s3.eu-central-1.amazonaws.com/product${imageIndex}.png`}
+                  alt={product.name}
+                  width={150}
+                  height={150}
+                  className="mb-3 rounded-2xl w-36 h-36"
+                />
+                <h3 className="text-lg text-gray-900 font-semibold">{product.name}</h3>
+                <p className="text-gray-800">${product.price.toFixed(2)}</p>
+                <div className="text-sm text-gray-600 mt-1">Stock: {product.stockQuantity}</div>
+                {product.rating && (
+                  <div className="flex items-center mt-2">
+                    <Rating rating={product.rating} />
+                  </div>
+                )}
+                {/* Add Quantity Button */}
+                <button
+                  className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                  onClick={() => {
+                    setCurrentProduct(product);
+                    setIsAddQuantityModalOpen(true);
+                  }}
+                >
+                  Add Quantity
+                </button>
+                {/* Edit Button */}
+                <button
+                  className="mt-4 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded flex items-center"
+                  onClick={() => {
+                    setCurrentProduct(product);
+                    setIsModalOpen(true);
+                    setIsEditMode(true);
+                  }}
+                >
+                  <PencilIcon className="w-4 h-4 mr-2" /> Edit
+                </button>
+                {/* Delete Button */}
+                <button
+                  className="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex items-center"
+                  onClick={() => handleDeleteClick(product)} // Open delete modal
+                >
+                  <TrashIcon className="w-4 h-4 mr-2" /> Delete
+                </button>
+              </div>
+              </div>
+          
+        );
+      })}
+    </div>
 
       {/* MODAL for delete confirmation */}
       <DeleteProductModal

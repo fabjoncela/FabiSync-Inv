@@ -25,11 +25,11 @@ const CardPopularProducts = () => {
               >
                 <div className="flex items-center gap-3">
                   <Image
-                    src={``}
+                    src={`https://s3-fabi-inv.s3.eu-central-1.amazonaws.com/product${Math.floor(Math.random() * 12) + 1}.png`}
                     alt={product.name}
-                    width={48}
-                    height={48}
-                    className="rounded-lg w-14 h-14"
+                    width={150}
+                    height={150}
+                    className="mb-3 rounded-2xl w-36 h-36"
                   />
                   <div className="flex flex-col justify-between gap-1">
                     <div className="font-bold text-gray-700">
