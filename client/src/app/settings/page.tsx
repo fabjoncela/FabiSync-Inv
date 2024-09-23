@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Header from "@/app/(components)/Header";
+import { useAppDispatch, useAppSelector } from "@/app/redux";
+import { setIsDarkMode } from "@/state";
 
 type UserSetting = {
   label: string;
@@ -13,17 +15,23 @@ const mockSettings: UserSetting[] = [
   { label: "Username", value: "john_doe", type: "text" },
   { label: "Email", value: "john.doe@example.com", type: "text" },
   { label: "Notification", value: true, type: "toggle" },
-  { label: "Dark Mode", value: false, type: "toggle" },
+  { label: "Dark Mode", value: false, type: "toggle" }, // Dark mode will be overridden by Redux state
   { label: "Language", value: "English", type: "text" },
 ];
 
 const Settings = () => {
-  const [userSettings, setUserSettings] = useState<UserSetting[]>(mockSettings);
+  const dispatch = useAppDispatch();
+  const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
+  const [userSettings, setUserSettings] = React.useState<UserSetting[]>(mockSettings);
 
   const handleToggleChange = (index: number) => {
-    const settingsCopy = [...userSettings];
-    settingsCopy[index].value = !settingsCopy[index].value as boolean;
-    setUserSettings(settingsCopy);
+    if (userSettings[index].label === "Dark Mode") {
+      dispatch(setIsDarkMode(!isDarkMode)); // Dispatch Redux action for dark mode
+    } else {
+      const settingsCopy = [...userSettings];
+      settingsCopy[index].value = !settingsCopy[index].value as boolean;
+      setUserSettings(settingsCopy);
+    }
   };
 
   return (
@@ -33,12 +41,8 @@ const Settings = () => {
         <table className="min-w-full bg-white rounded-lg">
           <thead className="bg-gray-800 text-white">
             <tr>
-              <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
-                Setting
-              </th>
-              <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
-                Value
-              </th>
+              <th className="text-left py-3 px-4 uppercase font-semibold text-sm">Setting</th>
+              <th className="text-left py-3 px-4 uppercase font-semibold text-sm">Value</th>
             </tr>
           </thead>
           <tbody>
@@ -51,7 +55,7 @@ const Settings = () => {
                       <input
                         type="checkbox"
                         className="sr-only peer"
-                        checked={setting.value as boolean}
+                        checked={setting.label === "Dark Mode" ? isDarkMode : (setting.value as boolean)}
                         onChange={() => handleToggleChange(index)}
                       />
                       <div
