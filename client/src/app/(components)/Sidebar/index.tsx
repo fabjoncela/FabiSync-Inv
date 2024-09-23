@@ -82,7 +82,7 @@ const Sidebar = () => {
         }`}
       >
         <Image
-          src=""
+          src="https://s3-fabi-inv.s3.eu-central-1.amazonaws.com/logo.png"
           alt="fabisync-logo"
           width={27}
           height={27}

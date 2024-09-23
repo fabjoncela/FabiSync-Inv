@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "s3-inventorymanagement.s3.us-east-2.amazonaws.com",
+        hostname: "s3-fabi-inv.s3.eu-central-1.amazonaws.com",
         port: "",
         pathname: "/**",
       },
@@ -14,5 +14,5 @@ const nextConfig = {
     ignoreBuildErrors: true, // Add this line to ignore TypeScript errors during the build
   },
 };
-
+//https://s3-fabi-inv.s3.eu-central-1.amazonaws.com/product1.png
 export default nextConfig;
