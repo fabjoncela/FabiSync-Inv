@@ -3,13 +3,11 @@ import { v4 } from "uuid";
 import Header from "@/app/(components)/Header";
 
 type ProductFormData = {
-  productId: string;
   name: string;
   price: number;
   stockQuantity: number;
   rating: number;
 };
-
 
 type CreateProductModalProps = {
   isOpen: boolean;
@@ -36,17 +34,10 @@ const CreateProductModal = ({
 
   // Update form data when editing a product
   useEffect(() => {
-  if (initialData) {
-    setFormData({
-      productId: initialData.productId || '', // Provide a default value if productId is missing
-      name: initialData.name,
-      price: initialData.price,
-      stockQuantity: initialData.stockQuantity,
-      rating: initialData.rating,
-    });
-  }
-}, [initialData]);
-
+    if (initialData) {
+      setFormData({ ...initialData });
+    }
+  }, [initialData]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
